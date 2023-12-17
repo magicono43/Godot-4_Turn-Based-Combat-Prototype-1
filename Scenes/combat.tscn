@@ -1,0 +1,77 @@
+[gd_scene load_steps=7 format=3 uid="uid://ctga3741uvmwa"]
+
+[ext_resource type="Texture2D" uid="uid://b2cdno2t8e5o7" path="res://Textures/[Base]BaseChip_pipo.png" id="1_bt4fm"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5cdhs"]
+bg_color = Color(1, 1, 1, 1)
+border_width_left = 7
+border_width_top = 7
+border_width_right = 7
+border_width_bottom = 7
+border_color = Color(0.45098, 0, 0, 1)
+border_blend = true
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_10kjd"]
+texture = ExtResource("1_bt4fm")
+texture_region_size = Vector2i(32, 32)
+6:65/0 = 0
+6:59/0 = 0
+6:63/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_hvgbv"]
+tile_size = Vector2i(32, 32)
+sources/0 = SubResource("TileSetAtlasSource_10kjd")
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gaohc"]
+atlas = ExtResource("1_bt4fm")
+region = Rect2(192, 3168, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_yc5md"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gaohc")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}]
+
+[node name="Combat" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Background" type="Panel" parent="."]
+clip_children = 2
+layout_mode = 0
+offset_right = 565.0
+offset_bottom = 110.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_5cdhs")
+
+[node name="Arena" type="TileMap" parent="Background"]
+scale = Vector2(0.25, 0.25)
+tile_set = SubResource("TileSet_hvgbv")
+format = 2
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Background/Arena"]
+sprite_frames = SubResource("SpriteFrames_yc5md")
+animation = &"idle"
+centered = false
+
+[node name="Debug1" type="Label" parent="."]
+layout_mode = 0
+offset_left = -52.0
+offset_top = -32.0
+offset_right = -12.0
+offset_bottom = -9.0
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(294, 182)

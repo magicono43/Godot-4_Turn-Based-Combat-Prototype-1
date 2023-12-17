@@ -1,0 +1,58 @@
+[gd_scene load_steps=5 format=3 uid="uid://g028yeuyqlsx"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t732f"]
+bg_color = Color(0.713726, 0, 0, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 4
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_irtdx"]
+bg_color = Color(0, 1, 0, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(1, 1, 1, 0)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 4
+anti_aliasing = false
+
+[sub_resource type="SystemFont" id="SystemFont_sheim"]
+font_names = PackedStringArray("Daggerfall")
+hinting = 0
+
+[sub_resource type="LabelSettings" id="LabelSettings_kao1c"]
+font = SubResource("SystemFont_sheim")
+font_size = 12
+font_color = Color(0, 0, 0, 1)
+
+[node name="EntityCombatStatus" type="ProgressBar"]
+offset_right = 45.0
+offset_bottom = 7.0
+theme_override_styles/background = SubResource("StyleBoxFlat_t732f")
+theme_override_styles/fill = SubResource("StyleBoxFlat_irtdx")
+max_value = 10.0
+step = 1.0
+show_percentage = false
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_left = -6.0
+offset_top = -16.0
+offset_right = 69.0
+offset_bottom = 7.0
+scale = Vector2(0.8, 0.8)
+label_settings = SubResource("LabelSettings_kao1c")
+horizontal_alignment = 1
+vertical_alignment = 1

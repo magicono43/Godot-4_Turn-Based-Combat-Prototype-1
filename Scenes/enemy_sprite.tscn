@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=3 uid="uid://coviqxf2o0jwu"]
+
+[ext_resource type="Texture2D" uid="uid://b2cdno2t8e5o7" path="res://Textures/[Base]BaseChip_pipo.png" id="1_fx0mi"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dbfd1"]
+atlas = ExtResource("1_fx0mi")
+region = Rect2(192, 4190, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_4335p"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dbfd1")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D"]
+sprite_frames = SubResource("SpriteFrames_4335p")
+animation = &"idle"
+centered = false

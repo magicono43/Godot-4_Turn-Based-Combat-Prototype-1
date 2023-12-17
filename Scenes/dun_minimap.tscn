@@ -1,0 +1,50 @@
+[gd_scene load_steps=5 format=3 uid="uid://bjlbm454gbmbn"]
+
+[ext_resource type="Texture2D" uid="uid://b2cdno2t8e5o7" path="res://Textures/[Base]BaseChip_pipo.png" id="1_sajrg"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lj0ck"]
+bg_color = Color(0, 0.360784, 0.568627, 1)
+border_width_left = 7
+border_width_top = 7
+border_width_right = 7
+border_width_bottom = 7
+border_color = Color(0, 0, 0, 1)
+border_blend = true
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ad2or"]
+texture = ExtResource("1_sajrg")
+texture_region_size = Vector2i(32, 32)
+6:65/0 = 0
+6:59/0 = 0
+6:63/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_500pk"]
+tile_size = Vector2i(32, 32)
+sources/0 = SubResource("TileSetAtlasSource_ad2or")
+
+[node name="DunMinimap" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -1152.0
+offset_bottom = -648.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Background" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 62.0
+offset_top = 38.0
+offset_right = 627.0
+offset_bottom = 385.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_lj0ck")
+
+[node name="TileMap" type="TileMap" parent="Background"]
+scale = Vector2(0.2, 0.2)
+tile_set = SubResource("TileSet_500pk")
+format = 2

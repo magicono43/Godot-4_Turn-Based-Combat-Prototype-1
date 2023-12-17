@@ -1,0 +1,237 @@
+[gd_scene load_steps=25 format=3 uid="uid://b8cebb8q8kxvo"]
+
+[ext_resource type="Script" path="res://Scripts/main.gd" id="1_tkhwu"]
+[ext_resource type="Texture2D" uid="uid://b2cdno2t8e5o7" path="res://Textures/[Base]BaseChip_pipo.png" id="2_eiynf"]
+[ext_resource type="Script" path="res://Scripts/dun_explore.gd" id="2_uyilm"]
+[ext_resource type="Texture2D" uid="uid://dvawef555cx00" path="res://Textures/32x32_Ugly_Numbers_1.png" id="3_e7hrj"]
+[ext_resource type="Script" path="res://Scripts/combat.gd" id="5_qam88"]
+[ext_resource type="AudioStream" uid="uid://bjeknf8fu15g5" path="res://Audio/EECureInMenu.wav" id="6_21l76"]
+[ext_resource type="AudioStream" uid="uid://fgarpkb8c1ow" path="res://Audio/8ADirkSlash.wav" id="7_7ajn5"]
+[ext_resource type="AudioStream" uid="uid://bxhtjqvy6ps3m" path="res://Audio/2ESwordSlashLong.wav" id="8_j0jyk"]
+[ext_resource type="PackedScene" uid="uid://cy0ln4x6585gv" path="res://Scenes/damage_text.tscn" id="9_vmrh8"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_imsga"]
+bg_color = Color(0, 0.376471, 0.6, 1)
+border_width_left = 7
+border_width_top = 7
+border_width_right = 7
+border_width_bottom = 7
+border_color = Color(0, 0, 0, 1)
+border_blend = true
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ad2or"]
+texture = ExtResource("2_eiynf")
+texture_region_size = Vector2i(32, 32)
+6:65/0 = 0
+6:59/0 = 0
+6:63/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_500pk"]
+tile_size = Vector2i(32, 32)
+sources/0 = SubResource("TileSetAtlasSource_ad2or")
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7qhqr"]
+atlas = ExtResource("2_eiynf")
+region = Rect2(192, 3168, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_uulf4"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7qhqr")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_a5tvs"]
+texture = ExtResource("3_e7hrj")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+4:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+3:1/0 = 0
+4:1/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_aj8gy"]
+texture = ExtResource("2_eiynf")
+texture_region_size = Vector2i(32, 32)
+6:83/0 = 0
+6:131/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_hcrrn"]
+tile_size = Vector2i(32, 32)
+sources/0 = SubResource("TileSetAtlasSource_a5tvs")
+sources/1 = SubResource("TileSetAtlasSource_aj8gy")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5cdhs"]
+bg_color = Color(1, 1, 1, 1)
+border_width_left = 7
+border_width_top = 7
+border_width_right = 7
+border_width_bottom = 7
+border_color = Color(0.45098, 0, 0, 1)
+border_blend = true
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_10kjd"]
+texture = ExtResource("2_eiynf")
+texture_region_size = Vector2i(32, 32)
+6:65/0 = 0
+6:59/0 = 0
+6:63/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_hvgbv"]
+tile_size = Vector2i(32, 32)
+sources/0 = SubResource("TileSetAtlasSource_10kjd")
+
+[sub_resource type="LabelSettings" id="LabelSettings_7d2k7"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_8hax4"]
+
+[sub_resource type="SystemFont" id="SystemFont_sfr2f"]
+font_names = PackedStringArray("Cambria")
+hinting = 0
+
+[sub_resource type="LabelSettings" id="LabelSettings_bk5l4"]
+font = SubResource("SystemFont_sfr2f")
+font_size = 19
+font_color = Color(0, 0, 0, 1)
+
+[node name="Main" type="Node2D" node_paths=PackedStringArray("dunMinimap", "combat")]
+script = ExtResource("1_tkhwu")
+dunMinimap = NodePath("DunMinimap")
+combat = NodePath("Combat")
+
+[node name="SoundEffects" type="Node" parent="."]
+
+[node name="Selection" type="AudioStreamPlayer" parent="SoundEffects"]
+stream = ExtResource("6_21l76")
+volume_db = -9.0
+
+[node name="Confirm" type="AudioStreamPlayer" parent="SoundEffects"]
+stream = ExtResource("7_7ajn5")
+volume_db = -7.0
+
+[node name="AIAttack" type="AudioStreamPlayer" parent="SoundEffects"]
+stream = ExtResource("8_j0jyk")
+volume_db = -12.0
+
+[node name="DunMinimap" type="Control" parent="." node_paths=PackedStringArray("mapTiles", "sectNumTiles", "playerDot", "panel", "debugtext1", "arena")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_uyilm")
+mapTiles = NodePath("Background/TileMap")
+sectNumTiles = NodePath("Background/TileMap/SectionNums")
+playerDot = NodePath("Background/TileMap/AnimatedSprite2D")
+panel = NodePath("Background")
+debugtext1 = NodePath("Debug1")
+arena = NodePath("../Combat/Background/Arena")
+
+[node name="Background" type="Panel" parent="DunMinimap"]
+clip_children = 2
+layout_mode = 0
+offset_right = 565.0
+offset_bottom = 347.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_imsga")
+
+[node name="TileMap" type="TileMap" parent="DunMinimap/Background"]
+scale = Vector2(0.5, 0.5)
+tile_set = SubResource("TileSet_500pk")
+format = 2
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="DunMinimap/Background/TileMap"]
+sprite_frames = SubResource("SpriteFrames_uulf4")
+animation = &"idle"
+centered = false
+
+[node name="SectionNums" type="TileMap" parent="DunMinimap/Background/TileMap"]
+tile_set = SubResource("TileSet_hcrrn")
+format = 2
+
+[node name="Debug1" type="Label" parent="DunMinimap"]
+layout_mode = 0
+offset_left = -52.0
+offset_top = -32.0
+offset_right = -12.0
+offset_bottom = -9.0
+
+[node name="Combat" type="Control" parent="." node_paths=PackedStringArray("panel", "arena", "changeSelectSound", "confirmSelectSound", "aiAttackSound", "roundNumText", "turnNumText", "arenaText", "damText")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("5_qam88")
+panel = NodePath("Background")
+arena = NodePath("Background/Arena")
+changeSelectSound = NodePath("../SoundEffects/Selection")
+confirmSelectSound = NodePath("../SoundEffects/Confirm")
+aiAttackSound = NodePath("../SoundEffects/AIAttack")
+roundNumText = NodePath("Debug2")
+turnNumText = NodePath("Debug3")
+arenaText = NodePath("ArenaText")
+damText = NodePath("../DamageText")
+
+[node name="Background" type="Panel" parent="Combat"]
+clip_children = 2
+layout_mode = 0
+offset_right = 565.0
+offset_bottom = 110.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_5cdhs")
+
+[node name="Arena" type="TileMap" parent="Combat/Background"]
+position = Vector2(7, 7)
+scale = Vector2(0.5, 0.5)
+tile_set = SubResource("TileSet_hvgbv")
+format = 2
+
+[node name="Debug2" type="Label" parent="Combat"]
+layout_mode = 0
+offset_left = 249.0
+offset_top = -54.0
+offset_right = 289.0
+offset_bottom = -31.0
+label_settings = SubResource("LabelSettings_7d2k7")
+
+[node name="Debug3" type="Label" parent="Combat"]
+layout_mode = 0
+offset_left = 256.0
+offset_top = -31.0
+offset_right = 296.0
+offset_bottom = -8.0
+label_settings = SubResource("LabelSettings_8hax4")
+
+[node name="ArenaText" type="Label" parent="Combat"]
+visible = false
+layout_mode = 0
+offset_left = 252.0
+offset_top = 15.0
+offset_right = 292.0
+offset_bottom = 39.0
+label_settings = SubResource("LabelSettings_bk5l4")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(294, 182)
+
+[node name="DamageText" parent="." instance=ExtResource("9_vmrh8")]
