@@ -5,8 +5,11 @@ signal round_ended
 signal turn_ended
 signal you_lost
 signal you_won
-signal selection_shifted(right:bool)
-signal selection_confirmed
+signal action_shifted(up:bool)
+signal action_confirmed(actionType:int)
+signal action_unconfirmed
+signal target_shifted(right:bool)
+signal target_confirmed
 
 @export var panel:Panel
 @export var arena:TileMap
@@ -16,6 +19,7 @@ signal selection_confirmed
 @export var roundNumText:Label
 @export var turnNumText:Label
 @export var arenaText:Label
+@export var combatActionUI:VBoxContainer
 @export var damText:Sprite2D
 
 var roundNum:int = 0
@@ -23,6 +27,8 @@ var turnCnt:int = 0
 var turnTaker
 var highestTurn:int = 0
 var playerTurn:bool = false
+var pickingAction:bool = false
+var actionSelectIndex:int = 0
 var selectionIndex:int = 0
 var selectedTarget
 var afterCombat:bool = false
@@ -33,8 +39,11 @@ func _ready() -> void:
 	turn_ended.connect(NextTurn_OnTurnEnded)
 	you_lost.connect(ShowLossText_OnLosing)
 	you_won.connect(ShowVictoryText_OnWinning)
-	selection_shifted.connect(ShiftSelection_OnSelectionShifted)
-	selection_confirmed.connect(PerformAction_OnSelectionConfirmed)
+	action_shifted.connect(ActionSelection_OnSelectionShifted)
+	action_confirmed.connect(SelectTarget_OnActionConfirmed)
+	action_unconfirmed.connect(ReselectAction_OnActionUnconfirmed)
+	target_shifted.connect(TargetSelection_OnSelectionShifted)
+	target_confirmed.connect(PerformAction_OnTargetConfirmed)
 	set_process_input(false)
 	set_process(false)
 	set_physics_process(false)
@@ -54,16 +63,26 @@ func _input(event:InputEvent)->void:
 				GloFuncs.ClearGlobalVars()
 				get_tree().reload_current_scene()
 	else:
-		if event.is_action_released("ui_down"):
+		if event.is_action_released("ui_end"):
 			HurtEveryone()
 
 		if playerTurn:
-			if event.is_action_released("ui_left"):
-				emit_signal("selection_shifted", false)
-			elif event.is_action_released("ui_right"):
-				emit_signal("selection_shifted", true)
-			elif event.is_action_released("ui_up"):
-				emit_signal("selection_confirmed")
+			if pickingAction:
+				if event.is_action_released("ui_down"):
+					emit_signal("action_shifted", false)
+				elif event.is_action_released("ui_up"):
+					emit_signal("action_shifted", true)
+				elif event.is_action_released("ui_right"):
+					emit_signal("action_confirmed", actionSelectIndex)
+			else:
+				if event.is_action_released("ui_left"):
+					emit_signal("target_shifted", false)
+				elif event.is_action_released("ui_right"):
+					emit_signal("target_shifted", true)
+				elif event.is_action_released("ui_down"):
+					emit_signal("target_confirmed")
+				elif event.is_action_released("ui_up"):
+					emit_signal("action_unconfirmed")
 
 func ResetCombatVariables()->void:
 	roundNum = 0
@@ -71,6 +90,8 @@ func ResetCombatVariables()->void:
 	turnTaker = null
 	highestTurn = 0
 	playerTurn = false
+	pickingAction = false
+	actionSelectIndex = 0
 	selectionIndex = 0
 	selectedTarget = null
 	afterCombat = false
@@ -128,16 +149,19 @@ func NextTurn_OnTurnEnded():
 
 	if who.stats is PlayerStats:
 		playerTurn = true
+		pickingAction = true
 	else:
 		playerTurn = false
 	turnTaker = who
 	if playerTurn == false:
-		TakeTurnAI()
+		await TakeTurnAI()
+		emit_signal("turn_ended"); return
 	else:
 		if selectionIndex > Glo.enemyParty.size()-1:
 			selectionIndex = Glo.enemyParty.size()-1
 		selectedTarget = Glo.enemyParty[selectionIndex]
-		selectedTarget.get_child(2).visible = true # Selection Cursor
+		combatActionUI.position = turnTaker.global_position + Vector2(-20,26)
+		combatActionUI.visible = true
 
 func TakeTurnAI():
 	var attacker = turnTaker
@@ -145,12 +169,10 @@ func TakeTurnAI():
 	if attacker.stats is AllyStats: target = Glo.enemyParty.pick_random()
 	else: target = Glo.party.pick_random()
 	var dam:int = randi_range(attacker.stats.atk.x,attacker.stats.atk.y)
-	PlayAttackAnimation(attacker,0.15)
-	await get_tree().create_timer(0.9).timeout
+	await PlayAttackAnimation(attacker,0.15)
 	DamageTarget(target,dam)
 	ShowDamageText(target,dam)
 	await get_tree().create_timer(0.6).timeout
-	emit_signal("turn_ended")
 
 func DamageTarget(target,dam:int)->void:
 	if dam > 0:
@@ -167,6 +189,7 @@ func PlayAttackAnimation(attacker,delay:float)->void:
 		await get_tree().create_timer(delay).timeout
 		if attacker.flip_h == true: attacker.flip_h = false
 		else: attacker.flip_h = true
+	await get_tree().create_timer(0.2).timeout
 
 func ShowDamageText(target,dam:int)->void:
 	damText.get_child(0).text = str(-1*dam)
@@ -175,9 +198,54 @@ func ShowDamageText(target,dam:int)->void:
 	await get_tree().create_timer(0.7).timeout
 	damText.visible = false
 
-func ShiftSelection_OnSelectionShifted(right:bool)->void:
+func ActionSelection_OnSelectionShifted(up:bool)->void:
+	var min:int = 0
+	var max:int = combatActionUI.get_child_count() - 1
+	var actions:Array = combatActionUI.get_children()
+	if not up:
+		if actionSelectIndex+1 > max: actionSelectIndex = min
+		else: actionSelectIndex += 1
+	else:
+		if actionSelectIndex-1 < min: actionSelectIndex = max
+		else: actionSelectIndex -= 1
+	changeSelectSound.play()
+	actions[actionSelectIndex].grab_focus()
+
+func SelectTarget_OnActionConfirmed(action:int)->void:
+	if action == 0: # Attack
+		pickingAction = false
+		combatActionUI.visible = false
+		actionSelectIndex = 0
+		if not selectedTarget == null:
+			selectedTarget.get_child(2).visible = true # Selection Cursor
+		else:
+			selectedTarget = Glo.enemyParty[0]
+			selectedTarget.get_child(2).visible = true # Selection Cursor
+		changeSelectSound.play()
+	elif action == 1: # Magic, nothing for now
+		changeSelectSound.play()
+		return
+	else: # Pass
+		playerTurn = false
+		pickingAction = false
+		combatActionUI.visible = false
+		actionSelectIndex = 0
+		changeSelectSound.play()
+		await get_tree().create_timer(0.4).timeout
+		emit_signal("turn_ended")
+
+func ReselectAction_OnActionUnconfirmed()->void:
+	pickingAction = true
+	combatActionUI.visible = true
+	selectedTarget.get_child(2).visible = false # Selection Cursor
+	selectionIndex = 0
+	selectedTarget = null
+	changeSelectSound.play()
+
+func TargetSelection_OnSelectionShifted(right:bool)->void:
 	var min:int = 0
 	var max:int = Glo.enemyParty.size() - 1
+	combatActionUI.visible = false
 	if right:
 		if selectionIndex+1 > max: selectionIndex = min
 		else: selectionIndex += 1
@@ -189,7 +257,7 @@ func ShiftSelection_OnSelectionShifted(right:bool)->void:
 	selectedTarget.get_child(2).visible = true # Selection Cursor
 	changeSelectSound.play()
 
-func PerformAction_OnSelectionConfirmed()->void:
+func PerformAction_OnTargetConfirmed()->void:
 	playerTurn = false
 	var dam:int = randi_range(turnTaker.stats.atk.x,turnTaker.stats.atk.y)
 	selectedTarget.get_child(2).visible = false # Selection Cursor

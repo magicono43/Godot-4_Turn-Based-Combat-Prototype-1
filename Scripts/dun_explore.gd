@@ -141,12 +141,14 @@ func MapDungeonTiles()->void:
 		var pos:Vector2i = Glo.rooms[r]
 		for k:int in range(-halfSize, halfSize+1):
 			for w:int in range(-halfSize, halfSize+1):
+				#await get_tree().create_timer(0.01).timeout
 				var place:Vector2i = Vector2i(pos.x + k, pos.y + w)
 				if r == 0: # Home Room Tile
 					mapTiles.set_cell(0, place, 0, Vector2i(6,63))
 				else: # Any other room tiles
 					mapTiles.set_cell(0, place, 0, Vector2i(6,65))
 	for r:int in Glo.halls.size():
+		#await get_tree().create_timer(0.01).timeout
 		var pos:Vector2i = Glo.halls[r]
 		mapTiles.set_cell(0, pos, 0, Vector2i(6,59))
 

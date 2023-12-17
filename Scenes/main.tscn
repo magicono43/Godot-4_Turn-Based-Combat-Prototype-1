@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://b8cebb8q8kxvo"]
+[gd_scene load_steps=26 format=3 uid="uid://b8cebb8q8kxvo"]
 
 [ext_resource type="Script" path="res://Scripts/main.gd" id="1_tkhwu"]
 [ext_resource type="Texture2D" uid="uid://b2cdno2t8e5o7" path="res://Textures/[Base]BaseChip_pipo.png" id="2_eiynf"]
@@ -9,6 +9,7 @@
 [ext_resource type="AudioStream" uid="uid://fgarpkb8c1ow" path="res://Audio/8ADirkSlash.wav" id="7_7ajn5"]
 [ext_resource type="AudioStream" uid="uid://bxhtjqvy6ps3m" path="res://Audio/2ESwordSlashLong.wav" id="8_j0jyk"]
 [ext_resource type="PackedScene" uid="uid://cy0ln4x6585gv" path="res://Scenes/damage_text.tscn" id="9_vmrh8"]
+[ext_resource type="PackedScene" uid="uid://ddmvqia3p4cp8" path="res://Scenes/combat_actions.tscn" id="10_aanog"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_imsga"]
 bg_color = Color(0, 0.376471, 0.6, 1)
@@ -173,7 +174,7 @@ offset_top = -32.0
 offset_right = -12.0
 offset_bottom = -9.0
 
-[node name="Combat" type="Control" parent="." node_paths=PackedStringArray("panel", "arena", "changeSelectSound", "confirmSelectSound", "aiAttackSound", "roundNumText", "turnNumText", "arenaText", "damText")]
+[node name="Combat" type="Control" parent="." node_paths=PackedStringArray("panel", "arena", "changeSelectSound", "confirmSelectSound", "aiAttackSound", "roundNumText", "turnNumText", "arenaText", "combatActionUI", "damText")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -189,6 +190,7 @@ aiAttackSound = NodePath("../SoundEffects/AIAttack")
 roundNumText = NodePath("Debug2")
 turnNumText = NodePath("Debug3")
 arenaText = NodePath("ArenaText")
+combatActionUI = NodePath("../CombatActions")
 damText = NodePath("../DamageText")
 
 [node name="Background" type="Panel" parent="Combat"]
@@ -235,3 +237,5 @@ vertical_alignment = 1
 position = Vector2(294, 182)
 
 [node name="DamageText" parent="." instance=ExtResource("9_vmrh8")]
+
+[node name="CombatActions" parent="." instance=ExtResource("10_aanog")]

@@ -1,0 +1,37 @@
+[gd_scene load_steps=3 format=3 uid="uid://ddmvqia3p4cp8"]
+
+[ext_resource type="Script" path="res://Scripts/combat_actions.gd" id="1_nwypn"]
+
+[sub_resource type="SystemFont" id="SystemFont_yqtyy"]
+font_names = PackedStringArray("Cambria")
+
+[node name="CombatActions" type="VBoxContainer" node_paths=PackedStringArray("attackButton", "magicButton", "passButton")]
+visible = false
+offset_right = 41.0
+offset_bottom = 77.0
+alignment = 1
+script = ExtResource("1_nwypn")
+attackButton = NodePath("Attack")
+magicButton = NodePath("Magic")
+passButton = NodePath("Pass")
+
+[node name="Attack" type="Button" parent="."]
+layout_mode = 2
+mouse_force_pass_scroll_events = false
+theme_override_fonts/font = SubResource("SystemFont_yqtyy")
+theme_override_font_sizes/font_size = 12
+text = "Attack"
+
+[node name="Magic" type="Button" parent="."]
+layout_mode = 2
+mouse_force_pass_scroll_events = false
+theme_override_fonts/font = SubResource("SystemFont_yqtyy")
+theme_override_font_sizes/font_size = 12
+text = "Magic"
+
+[node name="Pass" type="Button" parent="."]
+layout_mode = 2
+mouse_force_pass_scroll_events = false
+theme_override_fonts/font = SubResource("SystemFont_yqtyy")
+theme_override_font_sizes/font_size = 12
+text = "Pass"
