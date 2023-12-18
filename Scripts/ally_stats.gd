@@ -6,6 +6,8 @@ func _init()->void:
 	name = "Ally" + str(Glo.allyCounter)
 	maxHP = randi_range(3,9)
 	hp = maxHP
+	maxMP = 0
+	mp = maxMP
 	atk.x = randi_range(1,3)
 	atk.y = randi_range(4,6)
 	speed = randi_range(1,5)

@@ -4,6 +4,7 @@
 
 [sub_resource type="SystemFont" id="SystemFont_yqtyy"]
 font_names = PackedStringArray("Cambria")
+subpixel_positioning = 0
 
 [node name="CombatActions" type="VBoxContainer" node_paths=PackedStringArray("attackButton", "magicButton", "passButton")]
 visible = false

@@ -223,6 +223,8 @@ func SelectTarget_OnActionConfirmed(action:int)->void:
 			selectedTarget.get_child(2).visible = true # Selection Cursor
 		changeSelectSound.play()
 	elif action == 1: # Magic, nothing for now
+		#TODO Tomorrow work on adding spells and using MP points, etc.
+		# Oh yeah, also see about hiding the MP bar if the entity has 0 max MP.
 		changeSelectSound.play()
 		return
 	else: # Pass
