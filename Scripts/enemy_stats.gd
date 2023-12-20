@@ -6,7 +6,7 @@ func _init()->void:
 	name = "Enemy" + str(Glo.enemyCounter)
 	maxHP = randi_range(2,7)
 	hp = maxHP
-	maxMP = 0
+	maxMP = randi_range(0,1)
 	mp = maxMP
 	atk.x = randi_range(1,2)
 	atk.y = randi_range(3,4)

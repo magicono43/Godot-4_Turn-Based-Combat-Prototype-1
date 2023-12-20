@@ -9,7 +9,7 @@
 [ext_resource type="AudioStream" uid="uid://fgarpkb8c1ow" path="res://Audio/8ADirkSlash.wav" id="7_7ajn5"]
 [ext_resource type="AudioStream" uid="uid://bxhtjqvy6ps3m" path="res://Audio/2ESwordSlashLong.wav" id="8_j0jyk"]
 [ext_resource type="PackedScene" uid="uid://cy0ln4x6585gv" path="res://Scenes/damage_text.tscn" id="9_vmrh8"]
-[ext_resource type="PackedScene" uid="uid://ddmvqia3p4cp8" path="res://Scenes/combat_actions.tscn" id="10_aanog"]
+[ext_resource type="PackedScene" uid="uid://dcfbywknbdlgt" path="res://Scenes/combat_actions.tscn" id="10_aanog"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_imsga"]
 bg_color = Color(0, 0.376471, 0.6, 1)
@@ -112,8 +112,11 @@ font = SubResource("SystemFont_sfr2f")
 font_size = 19
 font_color = Color(0, 0, 0, 1)
 
-[node name="Main" type="Node2D" node_paths=PackedStringArray("dunMinimap", "combat")]
+[node name="Main" type="Node2D" node_paths=PackedStringArray("changeSelectSound", "confirmSelectSound", "aiAttackSound", "dunMinimap", "combat")]
 script = ExtResource("1_tkhwu")
+changeSelectSound = NodePath("SoundEffects/Selection")
+confirmSelectSound = NodePath("SoundEffects/Confirm")
+aiAttackSound = NodePath("SoundEffects/AIAttack")
 dunMinimap = NodePath("DunMinimap")
 combat = NodePath("Combat")
 
@@ -190,7 +193,7 @@ aiAttackSound = NodePath("../SoundEffects/AIAttack")
 roundNumText = NodePath("Debug2")
 turnNumText = NodePath("Debug3")
 arenaText = NodePath("ArenaText")
-combatActionUI = NodePath("../CombatActions")
+combatActionUI = NodePath("../CombatMenuContainer")
 damText = NodePath("../DamageText")
 
 [node name="Background" type="Panel" parent="Combat"]
@@ -238,4 +241,5 @@ position = Vector2(294, 182)
 
 [node name="DamageText" parent="." instance=ExtResource("9_vmrh8")]
 
-[node name="CombatActions" parent="." instance=ExtResource("10_aanog")]
+[node name="CombatMenuContainer" parent="." instance=ExtResource("10_aanog")]
+visible = false

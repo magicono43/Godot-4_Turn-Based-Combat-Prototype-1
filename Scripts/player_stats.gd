@@ -9,4 +9,4 @@ func _init()->void:
 	mp = maxMP
 	atk.x = randi_range(1,4)
 	atk.y = randi_range(5,8)
-	speed = randi_range(1,5)
+	speed = randi_range(3,8)

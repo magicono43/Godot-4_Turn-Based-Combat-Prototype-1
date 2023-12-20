@@ -48,8 +48,6 @@ func _init()->void:
 	name = "Name"
 	maxHP = randi_range(2,6)
 	hp = maxHP
-	maxMP = randi_range(2,6)
-	mp = maxMP
 	atk.x = randi_range(1,3)
 	atk.y = randi_range(4,6)
 	speed = randi_range(1,5)

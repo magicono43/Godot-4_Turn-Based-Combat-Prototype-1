@@ -5,9 +5,6 @@ signal round_ended
 signal turn_ended
 signal you_lost
 signal you_won
-signal action_shifted(up:bool)
-signal action_confirmed(actionType:int)
-signal action_unconfirmed
 signal target_shifted(right:bool)
 signal target_confirmed
 
@@ -19,7 +16,7 @@ signal target_confirmed
 @export var roundNumText:Label
 @export var turnNumText:Label
 @export var arenaText:Label
-@export var combatActionUI:VBoxContainer
+@export var combatActionUI:HBoxContainer
 @export var damText:Sprite2D
 
 var roundNum:int = 0
@@ -39,9 +36,6 @@ func _ready() -> void:
 	turn_ended.connect(NextTurn_OnTurnEnded)
 	you_lost.connect(ShowLossText_OnLosing)
 	you_won.connect(ShowVictoryText_OnWinning)
-	action_shifted.connect(ActionSelection_OnSelectionShifted)
-	action_confirmed.connect(SelectTarget_OnActionConfirmed)
-	action_unconfirmed.connect(ReselectAction_OnActionUnconfirmed)
 	target_shifted.connect(TargetSelection_OnSelectionShifted)
 	target_confirmed.connect(PerformAction_OnTargetConfirmed)
 	set_process_input(false)
@@ -68,12 +62,20 @@ func _input(event:InputEvent)->void:
 
 		if playerTurn:
 			if pickingAction:
-				if event.is_action_released("ui_down"):
-					emit_signal("action_shifted", false)
-				elif event.is_action_released("ui_up"):
-					emit_signal("action_shifted", true)
-				elif event.is_action_released("ui_right"):
-					emit_signal("action_confirmed", actionSelectIndex)
+				if combatActionUI.inSubMenu:
+					if event.is_action_released("ui_down"):
+						combatActionUI.ShiftSubMenuSelection(false)
+					elif event.is_action_released("ui_up"):
+						combatActionUI.ShiftSubMenuSelection(true)
+					elif event.is_action_released("ui_left"):
+						combatActionUI.UnconfirmAction()
+				else:
+					if event.is_action_released("ui_down"):
+						combatActionUI.ShiftActionSelection(false)
+					elif event.is_action_released("ui_up"):
+						combatActionUI.ShiftActionSelection(true)
+					elif event.is_action_released("ui_right"):
+						combatActionUI.TargetSelectOrSubmenu()
 			else:
 				if event.is_action_released("ui_left"):
 					emit_signal("target_shifted", false)
@@ -82,7 +84,7 @@ func _input(event:InputEvent)->void:
 				elif event.is_action_released("ui_down"):
 					emit_signal("target_confirmed")
 				elif event.is_action_released("ui_up"):
-					emit_signal("action_unconfirmed")
+					combatActionUI.UnconfirmAction()
 
 func ResetCombatVariables()->void:
 	roundNum = 0
@@ -197,52 +199,6 @@ func ShowDamageText(target,dam:int)->void:
 	damText.visible = true
 	await get_tree().create_timer(0.7).timeout
 	damText.visible = false
-
-func ActionSelection_OnSelectionShifted(up:bool)->void:
-	var min:int = 0
-	var max:int = combatActionUI.get_child_count() - 1
-	var actions:Array = combatActionUI.get_children()
-	if not up:
-		if actionSelectIndex+1 > max: actionSelectIndex = min
-		else: actionSelectIndex += 1
-	else:
-		if actionSelectIndex-1 < min: actionSelectIndex = max
-		else: actionSelectIndex -= 1
-	changeSelectSound.play()
-	actions[actionSelectIndex].grab_focus()
-
-func SelectTarget_OnActionConfirmed(action:int)->void:
-	if action == 0: # Attack
-		pickingAction = false
-		combatActionUI.visible = false
-		actionSelectIndex = 0
-		if not selectedTarget == null:
-			selectedTarget.get_child(2).visible = true # Selection Cursor
-		else:
-			selectedTarget = Glo.enemyParty[0]
-			selectedTarget.get_child(2).visible = true # Selection Cursor
-		changeSelectSound.play()
-	elif action == 1: # Magic, nothing for now
-		#TODO Tomorrow work on adding spells and using MP points, etc.
-		# Oh yeah, also see about hiding the MP bar if the entity has 0 max MP.
-		changeSelectSound.play()
-		return
-	else: # Pass
-		playerTurn = false
-		pickingAction = false
-		combatActionUI.visible = false
-		actionSelectIndex = 0
-		changeSelectSound.play()
-		await get_tree().create_timer(0.4).timeout
-		emit_signal("turn_ended")
-
-func ReselectAction_OnActionUnconfirmed()->void:
-	pickingAction = true
-	combatActionUI.visible = true
-	selectedTarget.get_child(2).visible = false # Selection Cursor
-	selectionIndex = 0
-	selectedTarget = null
-	changeSelectSound.play()
 
 func TargetSelection_OnSelectionShifted(right:bool)->void:
 	var min:int = 0

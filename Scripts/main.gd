@@ -1,5 +1,9 @@
 extends Node2D
 
+@export var changeSelectSound:AudioStreamPlayer
+@export var confirmSelectSound:AudioStreamPlayer
+@export var aiAttackSound:AudioStreamPlayer
+
 @export var dunMinimap:Control
 @export var combat:Control
 

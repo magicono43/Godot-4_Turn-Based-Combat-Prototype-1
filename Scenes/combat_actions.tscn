@@ -1,4 +1,4 @@
-[gd_scene load_steps=3 format=3 uid="uid://ddmvqia3p4cp8"]
+[gd_scene load_steps=6 format=3 uid="uid://dcfbywknbdlgt"]
 
 [ext_resource type="Script" path="res://Scripts/combat_actions.gd" id="1_nwypn"]
 
@@ -6,33 +6,103 @@
 font_names = PackedStringArray("Cambria")
 subpixel_positioning = 0
 
-[node name="CombatActions" type="VBoxContainer" node_paths=PackedStringArray("attackButton", "magicButton", "passButton")]
-visible = false
-offset_right = 41.0
-offset_bottom = 77.0
-alignment = 1
-script = ExtResource("1_nwypn")
-attackButton = NodePath("Attack")
-magicButton = NodePath("Magic")
-passButton = NodePath("Pass")
+[sub_resource type="SystemFont" id="SystemFont_625ak"]
+font_names = PackedStringArray("Cambria")
+subpixel_positioning = 0
 
-[node name="Attack" type="Button" parent="."]
+[sub_resource type="LabelSettings" id="LabelSettings_hsoy3"]
+font = SubResource("SystemFont_625ak")
+font_size = 12
+
+[sub_resource type="SystemFont" id="SystemFont_jjmd6"]
+font_names = PackedStringArray("Cambria")
+subpixel_positioning = 0
+
+[node name="CombatMenuContainer" type="HBoxContainer" node_paths=PackedStringArray("CombatActionsButtons", "attackButton", "magicButton", "passButton", "ActionSubMenu", "SubMenu", "SubMenuHeaderLabel", "ItemListNode")]
+offset_right = 132.0
+offset_bottom = 77.0
+script = ExtResource("1_nwypn")
+CombatActionsButtons = NodePath("CombatActions")
+attackButton = NodePath("CombatActions/Attack")
+magicButton = NodePath("CombatActions/Magic")
+passButton = NodePath("CombatActions/Pass")
+ActionSubMenu = NodePath("ActionSubMenu")
+SubMenu = NodePath("ActionSubMenu/SubMenu")
+SubMenuHeaderLabel = NodePath("ActionSubMenu/SubMenu/MenuHeader/HeaderText")
+ItemListNode = NodePath("ActionSubMenu/SubMenu/ItemList")
+
+[node name="CombatActions" type="VBoxContainer" parent="."]
+layout_mode = 2
+alignment = 1
+
+[node name="Attack" type="Button" parent="CombatActions"]
 layout_mode = 2
 mouse_force_pass_scroll_events = false
 theme_override_fonts/font = SubResource("SystemFont_yqtyy")
 theme_override_font_sizes/font_size = 12
 text = "Attack"
 
-[node name="Magic" type="Button" parent="."]
+[node name="Magic" type="Button" parent="CombatActions"]
 layout_mode = 2
 mouse_force_pass_scroll_events = false
 theme_override_fonts/font = SubResource("SystemFont_yqtyy")
 theme_override_font_sizes/font_size = 12
 text = "Magic"
 
-[node name="Pass" type="Button" parent="."]
+[node name="Pass" type="Button" parent="CombatActions"]
 layout_mode = 2
 mouse_force_pass_scroll_events = false
 theme_override_fonts/font = SubResource("SystemFont_yqtyy")
 theme_override_font_sizes/font_size = 12
 text = "Pass"
+
+[node name="ActionSubMenu" type="ScrollContainer" parent="."]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+follow_focus = true
+
+[node name="SubMenu" type="VBoxContainer" parent="ActionSubMenu"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 0
+
+[node name="MenuHeader" type="Panel" parent="ActionSubMenu/SubMenu"]
+clip_contents = true
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.2
+
+[node name="HeaderText" type="Label" parent="ActionSubMenu/SubMenu/MenuHeader"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -11.5
+offset_right = 20.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "SPELLS"
+label_settings = SubResource("LabelSettings_hsoy3")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ItemList" type="ItemList" parent="ActionSubMenu/SubMenu"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/v_separation = 0
+theme_override_fonts/font = SubResource("SystemFont_jjmd6")
+theme_override_font_sizes/font_size = 12
+allow_rmb_select = true
+item_count = 6
+item_0/text = "Heal"
+item_1/text = "Fire"
+item_2/text = "Ice"
+item_3/text = "Lightning"
+item_4/text = "Earth"
+item_5/text = "Heart"
